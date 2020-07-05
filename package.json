@@ -1,0 +1,23 @@
+{
+  "name": "social-coupons",
+  "version": "1.0.0",
+  "description": "Social Coupons",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "npm run lite",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lite": "lite-server"
+  },
+  "author": "Nirmit",
+  "license": "MIT",
+  "devDependencies": {
+    "@openzeppelin/contracts": "^3.1.0",
+    "lite-server": "^2.5.4"
+  },
+  "dependencies": {
+    "openzeppelin-solidity": "^3.1.0"
+  }
+}
