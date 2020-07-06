@@ -2,11 +2,10 @@
 pragma solidity >=0.4.21 <0.7.0;
 
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
+//NGO.sol is imported to check whether event exists or not for which volunteer wishes to register
+import "./NGO.sol";
 
-contract Volunteer is ERC721 {
-
-    constructor() public ERC721("Volunteer Coupon", "SC") {}
+contract Volunteer is ERC721, NGO {
 
     struct structVolunteer {
         string volName;
@@ -15,6 +14,7 @@ contract Volunteer is ERC721 {
     }
 
     mapping(address => structVolunteer) public volunteers;
+    mapping(address => uint) public registeredVolunteers;
 
     event VolunteerRegistered(
         string volName,
@@ -27,6 +27,11 @@ contract Volunteer is ERC721 {
         require(bytes(_location).length > 0, "Volunteer location field cannot be empty...");
         volunteers[msg.sender] = structVolunteer(_volName, _location, msg.sender);
         emit VolunteerRegistered(_volName, _location, msg.sender);
+    }
+
+    function registerVolunteer4Events(uint _eventId) public {
+        require(eventExists(_eventId), "this event does not exists..");
+        registeredVolunteers[msg.sender] = _eventId;
     }
 
     function redeemCoupon(address _cottage, uint _tokenId) public {

@@ -11,25 +11,26 @@ contract Cottage is ERC721 {
     uint cottageCount = 0;
 
     struct structCottage {
-        uint cottageId;
         string cottageName;
         string cottageLocation;
         address cottageOwner;
     }
 
     mapping(uint => structCottage) public cottages;
+    mapping(address => structCottage) public cottagesByAddress;
 
     function registerCottage (string memory _name, string memory _location) public {
         require(bytes(_name).length > 0, "Cottage Name field cannot be empty...");
         require(bytes(_location).length > 0, "Cottage Location field cannot be empty...");
         cottageCount++;
-        cottages[cottageCount] = structCottage(cottageCount, _name, _location, msg.sender);
+        cottages[cottageCount] = structCottage(_name, _location, msg.sender);
+        cottagesByAddress[msg.sender] = structCottage(_name, _location, msg.sender);
     }
 
     function retrieveCottageDetails (uint _cottageId) public view returns
-     (uint cottageId, string memory cottageName, string memory cottageLocation, address cottageFounder) {
+     (string memory cottageName, string memory cottageLocation, address cottageOwner) {
         structCottage memory c = cottages[_cottageId];
-        return (c.cottageId, c.cottageName, c.cottageLocation, c.cottageOwner);
+        return (c.cottageName, c.cottageLocation, c.cottageOwner);
     }
 
     function settlement(uint _tokenId) public {
@@ -42,10 +43,10 @@ contract Cottage is ERC721 {
     uint prodCount = 0;
 
     struct Product {
-        uint prodId;
         string prodName;
         uint prodPrice;
         uint quantity;
+        address producer;
     }
 
     mapping(uint => Product) public products;
@@ -55,7 +56,14 @@ contract Cottage is ERC721 {
         require(_prodPrice > 0, "Product Price invalid...");
         require(_quantity > 0, "Product quantity invalid...");
         prodCount++;
-        products[prodCount] = Product(prodCount, _prodName, _prodPrice, _quantity);
+        products[prodCount] = Product(_prodName, _prodPrice, _quantity, msg.sender);
+    }
+
+    function retrieveProductDetails (uint _prodId) public view returns
+     (string memory prodName, uint prodPrice, uint quantity, address prodOwner, string memory location) {
+        Product memory p = products[_prodId];
+        structCottage memory c = cottagesByAddress[p.producer];
+        return (p.prodName, p.prodPrice, p.quantity, c.cottageOwner, c.cottageLocation);
     }
 
     function sellProduct(uint _prodId, uint _quantity) public returns (uint totalPrice) {

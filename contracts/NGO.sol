@@ -35,7 +35,6 @@ contract NGO is ERC721 {
         return (n.ngoName, n.ngoFounder, n.ngoEmail, n.ngoPhone);
     }
 
-
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
@@ -56,6 +55,7 @@ contract NGO is ERC721 {
         uint eventHours;
         uint eventAmount;
         address eventOrganizer;
+        bool isValid;
     }
 
     mapping(uint => Event) public events;
@@ -65,7 +65,13 @@ contract NGO is ERC721 {
         string eventDate,
         uint eventHours,
         uint eventAmount,
-        address eventOrganizer
+        address eventOrganizer,
+        bool isValid
+    );
+
+    event EventEnded(
+        uint eventId,
+        bool isValid
     );
 
     function addEvents(string memory _eventName, string memory _eventDate, uint _hours, uint _amount) public {
@@ -73,13 +79,25 @@ contract NGO is ERC721 {
         require(bytes(_eventDate).length > 0, "Event Date field cannot be empty...");
         require(ngoOwners[msg.sender], "Only NGO Owners can create events...");
         eventCount++;
-        events[eventCount] = Event(_eventName, _eventDate, _hours, _amount, msg.sender);
-        emit EventAdded(_eventName, _eventDate, _hours, _amount, msg.sender);
+        events[eventCount] = Event(_eventName, _eventDate, _hours, _amount, msg.sender, true);
+        emit EventAdded(_eventName, _eventDate, _hours, _amount, msg.sender, true);
+    }
+
+    function endEvent(uint _eventId) public {
+        require(eventExists(_eventId), "Event does not exist or has been ended already...");
+        Event storage e = events[_eventId];
+        e.isValid = false;
+        emit EventEnded(_eventId, e.isValid);
     }
 
     function retrieveEventDetails(uint _eventId) public view returns
      (string memory eventName, string memory eventDate, address eventOrganizer) {
         Event memory e = events[_eventId];
         return (e.eventName, e.eventDate, e.eventOrganizer);
+    }
+
+    function eventExists(uint _eventId) public view returns (bool isValid) {
+        Event memory e = events[_eventId];
+        return (e.isValid);
     }
 }
