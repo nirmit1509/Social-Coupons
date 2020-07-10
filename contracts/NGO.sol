@@ -11,28 +11,42 @@ contract NGO is ERC721 {
     uint public ngoCount = 0;
 
     struct structNGO {
+        string reedNo;
         string ngoName;
+        string founderName;
         address ngoFounder;
+        string PAN;
         string ngoEmail;
         string ngoPhone;
+        string location;
+        string year;
     }
 
     mapping(uint => structNGO) public ngoList;
     mapping(address => bool) public ngoOwners;
 
-    function registerNGO (string memory _ngoName, string memory _ngoEmail, string memory _ngoPhone) public {
+    function registerNGO (
+    string memory _reedNo, string memory _ngoName, string memory _founderName, string memory _PAN,
+    string memory _ngoEmail, string memory _ngoPhone, string memory _location, string memory _year
+    ) public {
+        require(bytes(_reedNo).length > 0, "NGO Registration Reed number required...");
         require(bytes(_ngoName).length > 0, "NGO Name field cannot be empty...");
+        require(bytes(_founderName).length > 0, "Name of Founder cannot be null...");
+        require(bytes(_PAN).length > 0, "NGO PAN no required...");
         require(bytes(_ngoEmail).length > 0, "NGO Email field cannot be empty...");
         require(bytes(_ngoPhone).length > 0, "NGO Phone no. field cannot be empty...");
+        require(bytes(_location).length > 0, "Address of NGO cannot be null...");
+        require(bytes(_year).length > 0, "NGO Year of Establishment required...");
         ngoCount++;
-        ngoList[ngoCount] = structNGO(_ngoName, msg.sender, _ngoEmail, _ngoPhone);
+        ngoList[ngoCount] = structNGO(_reedNo, _ngoName, _founderName, msg.sender, _PAN, _ngoEmail, _ngoPhone, _location, _year);
         ngoOwners[msg.sender] = true;
     }
 
     function retrieveNGODetails (uint _ngoId) public view returns
-     (string memory ngoName, address ngoFounder, string memory ngoEmail, string memory ngoPhone) {
+    (string memory reedNo, string memory ngoName, string memory founderName, address ngoFouner, string memory PAN,
+    string memory ngoEmail, string memory ngoPhone, string memory location, string memory year) {
         structNGO memory n = ngoList[_ngoId];
-        return (n.ngoName, n.ngoFounder, n.ngoEmail, n.ngoPhone);
+        return (n.reedNo, n.ngoName, n.founderName, n.ngoFounder, n.PAN, n.ngoEmail, n.ngoPhone, n.location, n.year);
     }
 
     using Counters for Counters.Counter;
