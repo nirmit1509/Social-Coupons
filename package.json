@@ -15,7 +15,7 @@
   "license": "MIT",
   "devDependencies": {
     "@openzeppelin/contracts": "^3.1.0",
-    "lite-server": "^2.5.4"
+    "lite-server": "^2.6.1"
   },
   "dependencies": {
     "openzeppelin-solidity": "^3.1.0"
