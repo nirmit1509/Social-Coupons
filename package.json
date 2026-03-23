@@ -14,10 +14,10 @@
   "author": "Nirmit",
   "license": "MIT",
   "devDependencies": {
-    "@openzeppelin/contracts": "^3.1.0",
     "lite-server": "^2.6.1"
+    "@openzeppelin/contracts": "^4.7.2",
   },
   "dependencies": {
-    "openzeppelin-solidity": "^3.1.0"
+    "openzeppelin-solidity": "^4.7.2"
   }
 }
